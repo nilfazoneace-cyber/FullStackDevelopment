@@ -1,0 +1,72 @@
+### BugBoard API requests. Works with the VS Code "REST Client" extension, Rider and Visual Studio.
+### Start the API first:  dotnet run --launch-profile http   (from backend/BugBoard.Api)
+
+@host = http://localhost:5082
+
+### 1. Log in as a Tester. The token is saved into {{token}} for the requests below.
+# @name loginTester
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "tester1@bugboard.local", "password": "Tester1Pass!" }
+
+###
+@token = {{loginTester.response.body.accessToken}}
+
+### 2. Who am I?
+GET {{host}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### 3. Users (for the assignee dropdown)
+GET {{host}}/api/users
+Authorization: Bearer {{token}}
+
+### 4. List bugs: filters + search + paging
+GET {{host}}/api/bugs?status=Open&severity=High&search=login&page=1&pageSize=5
+Authorization: Bearer {{token}}
+
+### 5. One bug
+GET {{host}}/api/bugs/1
+Authorization: Bearer {{token}}
+
+### 6. Create a bug  -> 201 + Location header
+POST {{host}}/api/bugs
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "title": "Created from the .http file", "description": "Optional text", "severity": "High", "assignedToId": 3 }
+
+### 7. Create with invalid data -> 400 with a per-field errors map
+POST {{host}}/api/bugs
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "title": "abc", "severity": "High" }
+
+### 8. Update (reporter or Lead only; Closed needs a Lead; Closed bugs are locked -> 409)
+PUT {{host}}/api/bugs/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "title": "Login button unresponsive on Safari", "description": "Updated", "severity": "High", "status": "InProgress", "assignedToId": 3 }
+
+### 9. Delete as a Tester -> 403
+DELETE {{host}}/api/bugs/1
+Authorization: Bearer {{token}}
+
+### 10. No token at all -> 401
+GET {{host}}/api/bugs
+
+### 11. Log in as the Lead
+# @name loginLead
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "lead@bugboard.local", "password": "LeadPass123!" }
+
+###
+@leadToken = {{loginLead.response.body.accessToken}}
+
+### 12. Delete as a Lead -> 204
+DELETE {{host}}/api/bugs/12
+Authorization: Bearer {{leadToken}}

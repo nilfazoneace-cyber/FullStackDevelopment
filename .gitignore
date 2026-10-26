@@ -1,0 +1,30 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+docs/
+
+# SQLite databases (created at runtime, re-seeded automatically)
+*.db
+*.db-shm
+*.db-wal
+
+# Secrets must never be committed. (user-secrets live outside the repo; this is a safety net.)
+appsettings.Secrets.json
+*.pfx
+.env.local
+.env.*.local
+
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+*.local
+test-results/
+playwright-report/
+
+# Editors / OS
+.idea/
+.DS_Store
+*.log

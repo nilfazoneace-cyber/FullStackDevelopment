@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BugBoard.Api/BugBoard.Api.csproj" />
+  <Project Path="BugBoard.Tests/BugBoard.Tests.csproj" />
+</Solution>
